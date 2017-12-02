@@ -10,6 +10,7 @@ from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QApplication,QWidget, QMainWindow, QPushButton, QAction
+from PyQt5.uic.properties import QtGui
 
 
 
@@ -23,7 +24,7 @@ class window(QMainWindow):
         
         
         extractAction = QAction('&Quit Application',self)
-        extractAction.setShortcut('ctrl+s')
+        extractAction.setShortcut('ctrl+Q')
         extractAction.setStatusTip('Leave the app')
         extractAction.triggered.connect(self.close_application)
         
@@ -33,8 +34,13 @@ class window(QMainWindow):
         fileMenu = mainMenu.addMenu('&File')
         fileMenu.addAction(extractAction)
         
+        extractAction = QAction(QIcon('CsvToolPic.png'),'flee the scene',self)
+        extractAction.triggered.connect(self.close_application)
         
+        self.toolBar = self.addToolBar('Extraction')
+        self.toolBar.addAction(extractAction)
         
+ 
         
         
         
