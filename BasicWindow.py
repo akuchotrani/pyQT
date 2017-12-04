@@ -10,6 +10,7 @@ from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QApplication,QWidget, QMainWindow, QPushButton, QAction,QMessageBox
+from PyQt5.QtWidgets import QComboBox
 from PyQt5.uic.properties import QtGui
 from PyQt5.QtWidgets import QCheckBox
 
@@ -58,11 +59,15 @@ class window(QMainWindow):
         #btn.clicked.connect(QCoreApplication.instance().quit)
         btn.clicked.connect(self.close_application)
         
-        checkBox = QCheckBox('Enlarge Window',self)
-        checkBox.move(0,50)
-        checkBox.stateChanged.connect(self.enlarge_window)
-        
-        
+        QLabel('Windows', self)
+        comboBox = QComboBox(self)
+        comboBox.addItem('motif')
+        comboBox.addItem('Windows')
+        comboBox.addItem('cde')
+        comboBox.addItem('Plastique')
+        comboBox.addItem('Cleanlooks')
+        comboBox.addItem('windowsvista')
+        comboBox.move(25, 250)
         
         
         self.show()
