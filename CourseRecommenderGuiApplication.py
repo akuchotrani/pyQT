@@ -43,6 +43,7 @@ class window(QMainWindow):
     def home(self):
         
         
+        
         self.SelectDepartmentLabel = QLabel('Select Department: ', self)
         self.SelectDepartmentLabel.move(25,25)
         department_List = ['Art','Computer Science','Math','Physics','Social Science','Music']
@@ -60,14 +61,20 @@ class window(QMainWindow):
         courses_comboBox.addItems(courseList)
         courses_comboBox.move(25,100)
         courses_comboBox.resize(courses_comboBox.sizeHint())
-        self.show()
-        
         
         
         btn = QPushButton('PredictCourses', self)
         btn.clicked.connect(self.close_application)
         btn.resize(btn.sizeHint())
-        btn.move(0, 100)
+        btn.move(25, 200)
+        
+        
+        
+        self.show()
+        
+        
+        
+       
         
         
     
