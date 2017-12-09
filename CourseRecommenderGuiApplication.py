@@ -28,12 +28,13 @@ class window(QMainWindow):
     csvTrainingData = 'TrainingData.csv'
     predictedCourses = []
     predictedCoursesWeights = []
+    Target_Student_Prev_Courses = []
     
     #Options which are common to the entire application are included inside the init method
     def __init__(self):
         #Setting up the window
         super(window, self).__init__()
-        self.setGeometry(50, 50, 1000, 500)
+        self.setGeometry(50, 50, 2000, 1000)
         self.setWindowTitle('DigiPen Course Recommender')
         self.setWindowIcon(QIcon('DigiPenLogo_new.png'))
         
@@ -71,22 +72,42 @@ class window(QMainWindow):
         
         
         
-        self.SelectCourse = QLabel('Select Course : ', self)
-        self.SelectCourse.move(xPosition,yPosition+90)
-        self.courses_comboBox = QComboBox(self)
-        self.courses_comboBox.addItems(self.courseList)
-        self.courses_comboBox.move(xPosition,yPosition+120)
-        self.courses_comboBox.resize(self.courses_comboBox.sizeHint())
+        self.SelectTargetCourse = QLabel('Select Target Course : ', self)
+        self.SelectTargetCourse.move(xPosition,yPosition+90)
+        self.target_courses_comboBox = QComboBox(self)
+        self.target_courses_comboBox.addItems(self.courseList)
+        self.target_courses_comboBox.move(xPosition,yPosition+120)
+        self.target_courses_comboBox.resize(self.target_courses_comboBox.sizeHint())
+        
+        self.SelectTrainingCourses = QLabel('Select Training Courses : ', self)
+        self.SelectTrainingCourses.move(xPosition+150,yPosition+100)
+        self.SelectTrainingCourses.resize(self.SelectTrainingCourses.sizeHint())
+        self.Training_Courses_ComboBox = QComboBox(self)
+        self.Training_Courses_ComboBox.move(xPosition+150,yPosition+120)
+        self.Training_Courses_ComboBox.resize(self.target_courses_comboBox.sizeHint())
+        
+        AddTrainingCourseBtn = QPushButton('Add Training Course', self)
+        AddTrainingCourseBtn.clicked.connect(self.Add_Training_Courses)
+        AddTrainingCourseBtn.resize(AddTrainingCourseBtn.sizeHint())
+        AddTrainingCourseBtn.move(xPosition+150, yPosition+150)
+        
+        
+        self.TrainingCourses = QListWidget(self)
+        self.TrainingCourses.move(xPosition+300,yPosition+100)
+        self.TrainingCourses.resize(300,400)
+        self.TrainingCourses.addItems(self.predictedCoursesWeights)
+        
+        self.predictedCoursesListWidget = QListWidget(self)
+        self.predictedCoursesListWidget.move(xPosition+600,yPosition+100)
+        self.predictedCoursesListWidget.resize(300,400)
+        self.predictedCoursesListWidget.addItems(self.predictedCoursesWeights)
         
         self.predictedCoursesWeightWidget = QListWidget(self)
-        self.predictedCoursesWeightWidget.move(xPosition+500,yPosition)
+        self.predictedCoursesWeightWidget.move(xPosition+900,yPosition+100)
         self.predictedCoursesWeightWidget.resize(300,400)
         self.predictedCoursesWeightWidget.addItems(self.predictedCoursesWeights)
         
-        self.predictedCoursesListWidget = QListWidget(self)
-        self.predictedCoursesListWidget.move(xPosition+200,yPosition)
-        self.predictedCoursesListWidget.resize(300,400)
-        self.predictedCoursesListWidget.addItems(self.predictedCoursesWeights)
+
         
         PredictBtn = QPushButton('Predict Courses', self)
         PredictBtn.clicked.connect(self.Predict_Results)
@@ -98,9 +119,20 @@ class window(QMainWindow):
         
         self.show()
         
+    
+    def Add_Training_Courses(self):
+        training_Course = str(self.Training_Courses_ComboBox.currentText())
+        print("Adding training course: ",training_Course)
+        self.Target_Student_Prev_Courses.append(training_Course)
+        self.TrainingCourses.addItem(training_Course)
+        self.TrainingCourses.update()
+        
+    
+    
+        
     def Predict_Results(self):
         
-        targetCourse = str(self.courses_comboBox.currentText())
+        targetCourse = str(self.target_courses_comboBox.currentText())
         print("Target Course Selected: ",targetCourse)
         
         ID_Prev_Students = ExtractingStudents.Check_Target_Course(targetCourse)
@@ -111,10 +143,10 @@ class window(QMainWindow):
         target_course_recorded_grades = ExtractingStudents.Record_Target_Course_Values(ID_Prev_Students,targetCourse)
         
         
-        self.Target_Student_Prev_Courses = ['MAT140','CS100','CS120','ENG110','COL101','GAM100',
-                                   'MAT150','CS170','CS230','COM150','GAM150',
-                                   'MAT200','CS180','CS200','CS225','GAM200',
-                                   'MAT250','PHY200','CS250','CS280','GAM250']
+#        self.Target_Student_Prev_Courses = ['MAT140','CS100','CS120','ENG110','COL101','GAM100',
+#                                   'MAT150','CS170','CS230','COM150','GAM150',
+#                                   'MAT200','CS180','CS200','CS225','GAM200',
+#                                   'MAT250','PHY200','CS250','CS280','GAM250']
         
         recordedCourseData = ExtractingStudents.Create_Data_To_Train(self.Target_Student_Prev_Courses, ID_Prev_Students)
         cleanedRecordedData = ExtractingStudents.Clean_Data_To_Train(recordedCourseData)
@@ -168,7 +200,8 @@ class window(QMainWindow):
     def update_available_courses(self):
         self.courseList = ExtractingStudents.AvailableCourses
         self.courseList.sort()
-        self.courses_comboBox.addItems(self.courseList)
+        self.target_courses_comboBox.addItems(self.courseList)
+        self.Training_Courses_ComboBox.addItems(self.courseList)
         
     
         
