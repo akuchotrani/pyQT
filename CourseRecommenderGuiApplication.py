@@ -12,7 +12,7 @@ import sys
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication,QMainWindow,QAction,QMessageBox,QPushButton,QLabel
-from PyQt5.QtWidgets import QComboBox,QFileDialog,QListWidget,QListWidgetItem
+from PyQt5.QtWidgets import QComboBox,QFileDialog,QListWidget,QListWidgetItem,QLineEdit
 import numpy as np
 import ExtractingStudents
 import GradientDescentGradePrediction
@@ -115,10 +115,67 @@ class window(QMainWindow):
         PredictBtn.resize(PredictBtn.sizeHint())
         PredictBtn.move(xPosition, yPosition+150)
         
+        RestartBtn = QPushButton('Restart Prediction', self)
+        RestartBtn.clicked.connect(self.Restart_Prediction)
+        RestartBtn.resize(RestartBtn.sizeHint())
+        RestartBtn.move(xPosition, yPosition+250)
         
+        
+        # Create textbox
+        self.GradeTextBox = QLineEdit(self)
+        self.GradeTextBox.move(xPosition+1300,yPosition+100)
+        self.GradeTextBox.resize(280,40)
+        
+        PredictGradeBtn = QPushButton('Predict Grade', self)
+        PredictGradeBtn.clicked.connect(self.Predict_Grade)
+        PredictGradeBtn.resize(PredictGradeBtn.sizeHint())
+        PredictGradeBtn.move(xPosition+1300,yPosition+150)
+        
+        PredictGradeHintLabel = QLabel('Predicted Grade: ', self)
+        PredictGradeHintLabel.move(xPosition+1300,yPosition+200)
+        
+        self.PredictedGradeNumberLabel = QLabel('0', self)
+        self.PredictedGradeNumberLabel.move(xPosition+1400,yPosition+200)
         
         self.show()
         
+    
+    
+    def Predict_Grade(self):
+        enteredGrades = self.GradeTextBox.text()
+        floatGrades = []
+        for grade in enteredGrades.split(','):
+            floatGrades.append(float(grade))
+            
+        print("Entered Grades:",enteredGrades)
+        print("Float Grades:",floatGrades)
+        
+        finalPredictedGrade = 0
+        courseCounter = 0
+        for grade in floatGrades:
+            print("Multiplying Weight:",self.predictedCoursesWeights[courseCounter]," and Grade:",grade)
+            finalPredictedGrade = finalPredictedGrade + grade*float(self.predictedCoursesWeights[courseCounter])
+            courseCounter = courseCounter + 1
+        
+        print("Final Grade: ",finalPredictedGrade)
+        self.PredictedGradeNumberLabel.setText(str(finalPredictedGrade))
+        
+        #clearing the enteredGrades when prediction is done
+        floatGrades.clear()
+        
+        
+    def Restart_Prediction(self):
+        print("Restarting Prediction")
+        self.TrainingCourses.clear()
+        self.predictedCoursesListWidget.clear()
+        self.predictedCoursesWeightWidget.clear()
+        self.Target_Student_Prev_Courses.clear()
+        self.predictedCoursesWeights.clear()
+        
+        self.GradeTextBox.clear()
+        self.PredictedGradeNumberLabel.setText("0")
+    
+    
     
     def Add_Training_Courses(self):
         training_Course = str(self.Training_Courses_ComboBox.currentText())
@@ -161,32 +218,55 @@ class window(QMainWindow):
         self.Display_Predicted_Courses(Model)
     
     
-    def Display_Predicted_Courses(self,Model):
-        #print("Model Weights: ",Model.coef_)
         
-        courseCounter = 0
+    def Display_Predicted_Courses(self,Model):
+        
+        unScaledPredictedWeights = []
+        SumOfPredictedWeights = 0
         for weight in Model.coef_[0]:
+            #Ignoring the negative weights
+            if weight > 0:
+                SumOfPredictedWeights = SumOfPredictedWeights + weight
+                unScaledPredictedWeights.append(weight)
+            else:
+                unScaledPredictedWeights.append(0)
+        
+        ScaledPredictedWeights = []
+        for item in unScaledPredictedWeights:
+            scaledItem = item/SumOfPredictedWeights
+            scaledItem = format(scaledItem,'.2f')
+            ScaledPredictedWeights.append(scaledItem)
+            
+        print("UnScaledPredicted Weights:",unScaledPredictedWeights)
+        print("SumOfPredictedPositiveWeights:",SumOfPredictedWeights)
+        print("ScaledPredictedWeight:",ScaledPredictedWeights)
+        for weight in ScaledPredictedWeights:
             self.predictedCoursesWeights.append(str(weight))
-            courseCounter = courseCounter + 1
             
         #print(self.predictedCoursesWeights)
         #self.predictedCoursesWeights = np.array_str(Model.coef_) 
         Output_Weights = []
         Output_Subjects = []
-        Output_Subjects.clear()
-        Output_Weights.clear()
+
         zipped = sorted(zip(self.Target_Student_Prev_Courses,self.predictedCoursesWeights),key = lambda x:x[1], reverse = True)
+        print("Zipped:",zipped)
         for item in zipped:
             print("Subject:",item[0]," Weight:",item[1])
             Output_Subjects.append(item[0])
             Output_Weights.append(item[1])
             
-            
-        self.predictedCoursesListWidget.clear()
-        self.predictedCoursesWeightWidget.clear()
 
         self.predictedCoursesWeightWidget.addItems(Output_Weights)
         self.predictedCoursesListWidget.addItems(Output_Subjects)
+        
+        #clearing All data before next prediction
+        zipped.clear()
+        print("Zipped Clear: ",zipped)
+        Output_Subjects.clear()
+        Output_Weights.clear()
+        unScaledPredictedWeights.clear()
+        ScaledPredictedWeights.clear()
+        SumOfPredictedWeights = 0
        
         
     def file_open(self):
