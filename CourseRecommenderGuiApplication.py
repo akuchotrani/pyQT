@@ -14,13 +14,15 @@ from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon,QFont
 from PyQt5.QtWidgets import QApplication,QMainWindow,QAction,QMessageBox,QPushButton,QLabel
-from PyQt5.QtWidgets import QComboBox,QFileDialog,QListWidget,QListWidgetItem,QLineEdit,QHBoxLayout
+from PyQt5.QtWidgets import QComboBox,QFileDialog,QListWidget,QListWidgetItem,QLineEdit,QHBoxLayout,QVBoxLayout
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QWidget
 import numpy as np
 import ExtractingStudents
 import GradientDescentGradePrediction
 
-xPosition = 25
-yPosition = 25
+xPosition = 40
+yPosition = 40
 
 
 class QCustomQWidget(QMainWindow):
@@ -76,6 +78,14 @@ class window(QMainWindow):
         
     def home(self):
         
+        
+#        self.grid = QGridLayout()
+#        centralWidget = QWidget(self)
+#        centralWidget.setLayout(self.grid)
+#        self.setCentralWidget(centralWidget)
+
+
+        
         SelectDataFileLabel = QLabel('Select Data File: ', self)
         SelectDataFileLabel.move(xPosition,yPosition)
         SelectDataFileLabel.setStyleSheet("Qlabel{font:30pt Comic Sans MS}")
@@ -117,12 +127,12 @@ class window(QMainWindow):
         self.target_courses_comboBox.resize(200,25)
         
         self.SelectTrainingCourses = QLabel('Select Training Courses : ', self)
-        self.SelectTrainingCourses.move(xPosition,yPosition+100)
+        self.SelectTrainingCourses.move(xPosition,yPosition+200)
         self.SelectTrainingCourses.setFont(QFont('Arial', 12))
         self.SelectTrainingCourses.resize(self.SelectTrainingCourses.sizeHint())
         
         self.Training_Courses_ComboBox = QComboBox(self)
-        self.Training_Courses_ComboBox.move(xPosition,yPosition+120)
+        self.Training_Courses_ComboBox.move(xPosition,yPosition+220)
         self.Training_Courses_ComboBox.setFont(QFont('Arial', 12))
         self.Training_Courses_ComboBox.resize(self.target_courses_comboBox.sizeHint())
         self.Training_Courses_ComboBox.resize(200,25)
@@ -131,7 +141,7 @@ class window(QMainWindow):
         AddTrainingCourseBtn.clicked.connect(self.Add_Training_Courses)
         AddTrainingCourseBtn.setFont(QFont('Arial', 12))
         AddTrainingCourseBtn.resize(AddTrainingCourseBtn.sizeHint())
-        AddTrainingCourseBtn.move(xPosition, yPosition+150)
+        AddTrainingCourseBtn.move(xPosition, yPosition+270)
         
 #        myCustomQWidget = QCustomQWidget()
 #        myQListWidgetItem = QtGui.QListWidgetItem(self.myQListWidget)
@@ -143,22 +153,34 @@ class window(QMainWindow):
 #        self.TrainingCourses.addItem(myQListWidgetItem)
         
 
+        TrainingCoursesLabel = QLabel('Training Courses:', self)
+        TrainingCoursesLabel.move(xPosition+300,yPosition+175)
+        TrainingCoursesLabel.setFont(QFont('Arial', 12))
+        TrainingCoursesLabel.resize(TrainingCoursesLabel.sizeHint())
         #self.cutomItem = QListWidgetItem('this is custom text')
         self.TrainingCourses = QListWidget(self)
-        self.TrainingCourses.move(xPosition+300,yPosition+100)
+        self.TrainingCourses.move(xPosition+300,yPosition+200)
         self.TrainingCourses.resize(300,400)
         self.TrainingCourses.setFont(QFont('Arial', 12))
 
 
+        PredictedCoursesLabel = QLabel('Predicted Courses Effect:', self)
+        PredictedCoursesLabel.move(xPosition+700,yPosition+175)
+        PredictedCoursesLabel.setFont(QFont('Arial', 12))
+        PredictedCoursesLabel.resize(PredictedCoursesLabel.sizeHint())
         
         self.predictedCoursesListWidget = QListWidget(self)
-        self.predictedCoursesListWidget.move(xPosition+600,yPosition+100)
+        self.predictedCoursesListWidget.move(xPosition+700,yPosition+200)
         self.predictedCoursesListWidget.resize(300,400)
         self.predictedCoursesListWidget.addItems(self.predictedCoursesWeights)
         self.predictedCoursesListWidget.setFont(QFont('Arial', 12))
         
+        PredictedWeightsLabel = QLabel('Predicted Weights:', self)
+        PredictedWeightsLabel.move(xPosition+1000,yPosition+175)
+        PredictedWeightsLabel.setFont(QFont('Arial', 12))
+        PredictedWeightsLabel.resize(PredictedWeightsLabel.sizeHint())
         self.predictedCoursesWeightWidget = QListWidget(self)
-        self.predictedCoursesWeightWidget.move(xPosition+900,yPosition+100)
+        self.predictedCoursesWeightWidget.move(xPosition+1000,yPosition+200)
         self.predictedCoursesWeightWidget.resize(300,400)
         self.predictedCoursesWeightWidget.setFont(QFont('Arial', 12))
         self.predictedCoursesWeightWidget.addItems(self.predictedCoursesWeights)
@@ -170,37 +192,68 @@ class window(QMainWindow):
         PredictBtn.clicked.connect(self.update_available_courses)
         PredictBtn.setFont(QFont('Arial', 12))
         PredictBtn.resize(PredictBtn.sizeHint())
-        PredictBtn.move(xPosition+550,yPosition+550)
-        
-        
-        RestartBtn = QPushButton('Reset', self)
-        RestartBtn.clicked.connect(self.Restart_Prediction)
-        RestartBtn.setFont(QFont('Arial', 12))
-        RestartBtn.resize(RestartBtn.sizeHint())
-        RestartBtn.move(xPosition,yPosition+800)
+        PredictBtn.move(xPosition+375,yPosition+625)
         
         
         
-        
+        SelectDataFileLabel = QLabel('Enter Grades Of Training Courses: ', self)
+        SelectDataFileLabel.move(xPosition+50,yPosition+710)
+        SelectDataFileLabel.setStyleSheet("Qlabel{font:30pt Comic Sans MS}")
+        SelectDataFileLabel.setFont(QFont('Arial', 12))
+        SelectDataFileLabel.resize(SelectDataFileLabel.sizeHint())
         # Create textbox
         self.GradeTextBox = QLineEdit(self)
-        self.GradeTextBox.move(xPosition+1300,yPosition+100)
+        self.GradeTextBox.move(xPosition+300,yPosition+700)
+        self.GradeTextBox.setFont(QFont('Arial', 12))
         self.GradeTextBox.resize(280,40)
         
         PredictGradeBtn = QPushButton('Predict Grade', self)
         PredictGradeBtn.clicked.connect(self.Predict_Grade)
+        PredictGradeBtn.move(xPosition+375,yPosition+750)
+        PredictGradeBtn.setFont(QFont('Arial', 12))
         PredictGradeBtn.resize(PredictGradeBtn.sizeHint())
-        PredictGradeBtn.move(xPosition+1300,yPosition+150)
         
         PredictGradeHintLabel = QLabel('Predicted Grade: ', self)
-        PredictGradeHintLabel.move(xPosition+1300,yPosition+200)
+        PredictGradeHintLabel.move(xPosition+800,yPosition+750)
+        PredictGradeHintLabel.setStyleSheet("color: rgb(0,0,250);")
+        PredictGradeHintLabel.setFont(QFont('Arial', 12))
+        PredictGradeHintLabel.resize(PredictGradeHintLabel.sizeHint())
         
         self.PredictedGradeNumberLabel = QLabel('0', self)
-        self.PredictedGradeNumberLabel.move(xPosition+1400,yPosition+200)
+        self.PredictedGradeNumberLabel.move(xPosition+1000,yPosition+750)
+        self.PredictedGradeNumberLabel.setStyleSheet("color: rgb(0,0,250);")
+        self.PredictedGradeNumberLabel.setFont(QFont('Arial', 12))
+        self.PredictedGradeNumberLabel.resize(100,20)
+        
+        RestartBtn = QPushButton('Reset', self)
+        RestartBtn.clicked.connect(self.Restart_Prediction)
+#        RestartBtn.clicked.connect(self.AddTextBox)
+        RestartBtn.setFont(QFont('Arial', 12))
+        RestartBtn.resize(RestartBtn.sizeHint())
+        RestartBtn.move(xPosition+700,yPosition+850)
+        
+        
+        
+        
+        
+        
+
+        
+
+
+        
+        
+       
         
         self.show()
         
     
+#    def AddTextBox(self):
+#        self.DynamicGradeTextBox = QLineEdit(self)
+#        self.grid.addWidget(self.DynamicGradeTextBox,3, 1, 5, 1)
+#        self.DynamicGradeTextBox.resize(100,30)
+#        self.DynamicGradeTextBox.move(500,100)
+#        print("Added new TextBox")
     
     def Predict_Grade(self):
         enteredGrades = self.GradeTextBox.text()
@@ -219,6 +272,7 @@ class window(QMainWindow):
             courseCounter = courseCounter + 1
         
         print("Final Grade: ",finalPredictedGrade)
+        finalPredictedGrade = format(finalPredictedGrade,'.2f')
         self.PredictedGradeNumberLabel.setText(str(finalPredictedGrade))
         
         #clearing the enteredGrades when prediction is done
