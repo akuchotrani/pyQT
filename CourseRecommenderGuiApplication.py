@@ -10,15 +10,35 @@ Created on Mon Dec  4 11:24:42 2017
 
 import sys
 from PyQt5.QtCore import QCoreApplication, Qt
-from PyQt5.QtGui import QIcon
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+from PyQt5.QtGui import QIcon,QFont
 from PyQt5.QtWidgets import QApplication,QMainWindow,QAction,QMessageBox,QPushButton,QLabel
-from PyQt5.QtWidgets import QComboBox,QFileDialog,QListWidget,QListWidgetItem,QLineEdit
+from PyQt5.QtWidgets import QComboBox,QFileDialog,QListWidget,QListWidgetItem,QLineEdit,QHBoxLayout
 import numpy as np
 import ExtractingStudents
 import GradientDescentGradePrediction
 
 xPosition = 25
 yPosition = 25
+
+
+class QCustomQWidget(QMainWindow):
+    def __init__(self,parent = None):
+        super(QMainWindow, self).__init__(parent)
+        self.myTestBtn = QPushButton("helloBtn")
+        
+        self.CourseNameLabel = QLabel()
+        self.GradeTextBox = QLineEdit()
+        self.allQHBoxLayout = QHBoxLayout()
+        #self.allQHBoxLayout.addLayout(self.CourseNameLabel,0)
+        #self.allQHBoxLayout.addLayout(self.GradeTextBox,1)
+        #self.allQHBoxLayout.addWidget(self.myTestBtn,0)
+        self.allQHBoxLayout.addWidget(self.GradeTextBox,0)
+        self.setLayout(self.allQHBoxLayout)
+    
+    def setCourseName(self,courseName):
+        self.CourseNameLabel.setText(courseName)
 
 
 class window(QMainWindow):
@@ -56,69 +76,110 @@ class window(QMainWindow):
         
     def home(self):
         
-        chooseDataFilebtn = QPushButton('Choose File', self)
-        chooseDataFilebtn.clicked.connect(self.file_open)
-        chooseDataFilebtn.resize(chooseDataFilebtn.sizeHint())
-        chooseDataFilebtn.move(xPosition, yPosition)
+        SelectDataFileLabel = QLabel('Select Data File: ', self)
+        SelectDataFileLabel.move(xPosition,yPosition)
+        SelectDataFileLabel.setStyleSheet("Qlabel{font:30pt Comic Sans MS}")
+        SelectDataFileLabel.setFont(QFont('Arial', 12))
+        SelectDataFileLabel.resize(SelectDataFileLabel.sizeHint())
         
-        self.SelectDepartmentLabel = QLabel('Select Department: ', self)
-        self.SelectDepartmentLabel.move(xPosition,yPosition+30)
+        chooseDataFilebtn = QPushButton(' Choose File ', self)
+        chooseDataFilebtn.clicked.connect(self.file_open)
+        chooseDataFilebtn.setFont(QFont('Arial', 12))
+        chooseDataFilebtn.resize(chooseDataFilebtn.sizeHint())
+        chooseDataFilebtn.move(xPosition+120, yPosition)
+        
+        
+        SelectDepartmentLabel = QLabel('Select Department: ', self)
+        SelectDepartmentLabel.setFont(QFont('Arial', 12))
+        SelectDepartmentLabel.move(xPosition,yPosition+40)
+        SelectDepartmentLabel.resize(SelectDepartmentLabel.sizeHint())
+        
         department_List = ['ALL','Art','Computer Science','Math','Physics','Social Science','Music']
         department_comboBox = QComboBox(self)
+        department_comboBox.setFont(QFont('Arial', 12))
         department_comboBox.addItems(department_List)
         department_comboBox.resize(department_comboBox.sizeHint())
-        department_comboBox.move(xPosition, yPosition+60)
+        department_comboBox.move(xPosition+150, yPosition+40)
         print(department_comboBox.currentIndex())
         
         
         
-        self.SelectTargetCourse = QLabel('Select Target Course : ', self)
-        self.SelectTargetCourse.move(xPosition,yPosition+90)
+        SelectTargetCourse = QLabel('Select Target Course : ', self)
+        SelectTargetCourse.move(xPosition+500,yPosition+40)
+        SelectTargetCourse.setFont(QFont('Arial', 12))
+        SelectTargetCourse.resize(SelectTargetCourse.sizeHint())
+        
+
         self.target_courses_comboBox = QComboBox(self)
         self.target_courses_comboBox.addItems(self.courseList)
-        self.target_courses_comboBox.move(xPosition,yPosition+120)
-        self.target_courses_comboBox.resize(self.target_courses_comboBox.sizeHint())
+        self.target_courses_comboBox.setFont(QFont('Arial', 12))
+        self.target_courses_comboBox.move(xPosition+650,yPosition+40)
+        self.target_courses_comboBox.resize(200,25)
         
         self.SelectTrainingCourses = QLabel('Select Training Courses : ', self)
-        self.SelectTrainingCourses.move(xPosition+150,yPosition+100)
+        self.SelectTrainingCourses.move(xPosition,yPosition+100)
+        self.SelectTrainingCourses.setFont(QFont('Arial', 12))
         self.SelectTrainingCourses.resize(self.SelectTrainingCourses.sizeHint())
+        
         self.Training_Courses_ComboBox = QComboBox(self)
-        self.Training_Courses_ComboBox.move(xPosition+150,yPosition+120)
+        self.Training_Courses_ComboBox.move(xPosition,yPosition+120)
+        self.Training_Courses_ComboBox.setFont(QFont('Arial', 12))
         self.Training_Courses_ComboBox.resize(self.target_courses_comboBox.sizeHint())
+        self.Training_Courses_ComboBox.resize(200,25)
         
-        AddTrainingCourseBtn = QPushButton('Add Training Course', self)
+        AddTrainingCourseBtn = QPushButton('Add Training Course >>> ', self)
         AddTrainingCourseBtn.clicked.connect(self.Add_Training_Courses)
+        AddTrainingCourseBtn.setFont(QFont('Arial', 12))
         AddTrainingCourseBtn.resize(AddTrainingCourseBtn.sizeHint())
-        AddTrainingCourseBtn.move(xPosition+150, yPosition+150)
+        AddTrainingCourseBtn.move(xPosition, yPosition+150)
         
+#        myCustomQWidget = QCustomQWidget()
+#        myQListWidgetItem = QtGui.QListWidgetItem(self.myQListWidget)
+#        myCustomQWidget.setCourseName("Course 1")
+#        self.TrainingCourses = QListWidget(self)
+#        self.TrainingCourses.move(xPosition+300,yPosition+100)
+#        self.TrainingCourses.resize(300,400)
+#        #self.TrainingCourses.addItems(self.predictedCoursesWeights)
+#        self.TrainingCourses.addItem(myQListWidgetItem)
         
+
+        #self.cutomItem = QListWidgetItem('this is custom text')
         self.TrainingCourses = QListWidget(self)
         self.TrainingCourses.move(xPosition+300,yPosition+100)
         self.TrainingCourses.resize(300,400)
-        self.TrainingCourses.addItems(self.predictedCoursesWeights)
+        self.TrainingCourses.setFont(QFont('Arial', 12))
+
+
         
         self.predictedCoursesListWidget = QListWidget(self)
         self.predictedCoursesListWidget.move(xPosition+600,yPosition+100)
         self.predictedCoursesListWidget.resize(300,400)
         self.predictedCoursesListWidget.addItems(self.predictedCoursesWeights)
+        self.predictedCoursesListWidget.setFont(QFont('Arial', 12))
         
         self.predictedCoursesWeightWidget = QListWidget(self)
         self.predictedCoursesWeightWidget.move(xPosition+900,yPosition+100)
         self.predictedCoursesWeightWidget.resize(300,400)
+        self.predictedCoursesWeightWidget.setFont(QFont('Arial', 12))
         self.predictedCoursesWeightWidget.addItems(self.predictedCoursesWeights)
         
 
         
-        PredictBtn = QPushButton('Predict Courses', self)
+        PredictBtn = QPushButton(' Build Weights ', self)
         PredictBtn.clicked.connect(self.Predict_Results)
         PredictBtn.clicked.connect(self.update_available_courses)
+        PredictBtn.setFont(QFont('Arial', 12))
         PredictBtn.resize(PredictBtn.sizeHint())
-        PredictBtn.move(xPosition, yPosition+150)
+        PredictBtn.move(xPosition+550,yPosition+550)
         
-        RestartBtn = QPushButton('Restart Prediction', self)
+        
+        RestartBtn = QPushButton('Reset', self)
         RestartBtn.clicked.connect(self.Restart_Prediction)
+        RestartBtn.setFont(QFont('Arial', 12))
         RestartBtn.resize(RestartBtn.sizeHint())
-        RestartBtn.move(xPosition, yPosition+250)
+        RestartBtn.move(xPosition,yPosition+800)
+        
+        
         
         
         # Create textbox
@@ -296,6 +357,8 @@ class window(QMainWindow):
             sys.exit()
         else:
             pass
+
+
 
 
 
