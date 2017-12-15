@@ -9,15 +9,9 @@ Created on Mon Dec  4 11:24:42 2017
 
 
 import sys
-from PyQt5.QtCore import QCoreApplication, Qt
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon,QFont
 from PyQt5.QtWidgets import QApplication,QMainWindow,QAction,QMessageBox,QPushButton,QLabel
-from PyQt5.QtWidgets import QComboBox,QFileDialog,QListWidget,QListWidgetItem,QLineEdit,QHBoxLayout,QVBoxLayout
-from PyQt5.QtWidgets import QGridLayout
-from PyQt5.QtWidgets import QWidget
-import numpy as np
+from PyQt5.QtWidgets import QComboBox,QFileDialog,QListWidget,QLineEdit,QHBoxLayout
 import ExtractingStudents
 import GradientDescentGradePrediction
 
@@ -77,13 +71,6 @@ class window(QMainWindow):
         self.home()
         
     def home(self):
-        
-        
-#        self.grid = QGridLayout()
-#        centralWidget = QWidget(self)
-#        centralWidget.setLayout(self.grid)
-#        self.setCentralWidget(centralWidget)
-
 
         
         SelectDataFileLabel = QLabel('Select Data File: ', self)
@@ -142,15 +129,6 @@ class window(QMainWindow):
         AddTrainingCourseBtn.setFont(QFont('Arial', 12))
         AddTrainingCourseBtn.resize(AddTrainingCourseBtn.sizeHint())
         AddTrainingCourseBtn.move(xPosition, yPosition+270)
-        
-#        myCustomQWidget = QCustomQWidget()
-#        myQListWidgetItem = QtGui.QListWidgetItem(self.myQListWidget)
-#        myCustomQWidget.setCourseName("Course 1")
-#        self.TrainingCourses = QListWidget(self)
-#        self.TrainingCourses.move(xPosition+300,yPosition+100)
-#        self.TrainingCourses.resize(300,400)
-#        #self.TrainingCourses.addItems(self.predictedCoursesWeights)
-#        self.TrainingCourses.addItem(myQListWidgetItem)
         
 
         TrainingCoursesLabel = QLabel('Training Courses:', self)
@@ -227,33 +205,12 @@ class window(QMainWindow):
         
         RestartBtn = QPushButton('Reset', self)
         RestartBtn.clicked.connect(self.Restart_Prediction)
-#        RestartBtn.clicked.connect(self.AddTextBox)
         RestartBtn.setFont(QFont('Arial', 12))
         RestartBtn.resize(RestartBtn.sizeHint())
         RestartBtn.move(xPosition+700,yPosition+850)
         
-        
-        
-        
-        
-        
-
-        
-
-
-        
-        
-       
-        
         self.show()
         
-    
-#    def AddTextBox(self):
-#        self.DynamicGradeTextBox = QLineEdit(self)
-#        self.grid.addWidget(self.DynamicGradeTextBox,3, 1, 5, 1)
-#        self.DynamicGradeTextBox.resize(100,30)
-#        self.DynamicGradeTextBox.move(500,100)
-#        print("Added new TextBox")
     
     def Predict_Grade(self):
         enteredGrades = self.GradeTextBox.text()
@@ -315,11 +272,6 @@ class window(QMainWindow):
         target_course_recorded_grades = ExtractingStudents.Record_Target_Course_Values(ID_Prev_Students,targetCourse)
         
         
-#        self.Target_Student_Prev_Courses = ['MAT140','CS100','CS120','ENG110','COL101','GAM100',
-#                                   'MAT150','CS170','CS230','COM150','GAM150',
-#                                   'MAT200','CS180','CS200','CS225','GAM200',
-#                                   'MAT250','PHY200','CS250','CS280','GAM250']
-        
         recordedCourseData = ExtractingStudents.Create_Data_To_Train(self.Target_Student_Prev_Courses, ID_Prev_Students)
         cleanedRecordedData = ExtractingStudents.Clean_Data_To_Train(recordedCourseData)
         
@@ -349,7 +301,7 @@ class window(QMainWindow):
         ScaledPredictedWeights = []
         for item in unScaledPredictedWeights:
             scaledItem = item/SumOfPredictedWeights
-            scaledItem = format(scaledItem,'.2f')
+            scaledItem = format(scaledItem,'.4f')
             ScaledPredictedWeights.append(scaledItem)
             
         print("UnScaledPredicted Weights:",unScaledPredictedWeights)
